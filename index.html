@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro de Pago</title>
+  <link rel="icon" href="alma.png" type="image/png">
+  <link rel="stylesheet" href="estilos.css">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="logreg.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+
+<!-- LOGIN Y REGISTRO -->
+<main id="pantallaLogin">
+  <div class="contenedor__todo">
+    <div class="caja__trasera">
+      <div class="caja__trasera-login">
+        <h3>¿Ya tienes una cuenta?</h3>
+        <p>Inicia sesión para entrar en la página</p>
+        <button id="btn__iniciar-sesion">Iniciar Sesión</button>
+      </div>
+      <div class="caja__trasera-register">
+        <h3>¿Aún no tienes una cuenta?</h3>
+        <p>Regístrate para que puedas iniciar sesión</p>
+        <button id="btn__registrarse">Regístrarse</button>
+      </div>
+    </div>
+
+    <div class="contenedor__login-register">
+      <form class="formulario__login">
+        <h2>Iniciar Sesión</h2>
+        <input id="loginEmail" type="text" placeholder="Correo Electronico">
+        <input id="loginPassword" type="password" placeholder="Contraseña">
+        <button type="button" onclick="login()">Entrar</button>
+      </form>
+
+      <form class="formulario__register">
+        <h2>Regístrarse</h2>
+        <input id="registerNombre" type="text" placeholder="Nombre completo">
+        <input id="registerEmail" type="text" placeholder="Correo Electronico">
+        <input id="registerUsuario" type="text" placeholder="Usuario">
+        <input id="registerPassword" type="password" placeholder="Contraseña">
+        <button type="button" onclick="registrarUsuario()">Regístrarse</button>
+      </form>
+    </div>
+  </div>
+</main>
+
+<div id="pantallaApp" class="hidden">
+  <h1>Reporte de Pagos de Trabajadores por Locación</h1>
+
+  <div id="accionesTabla">
+    <button onclick="mostrarFormulario()">Nuevo</button>
+    <button onclick="cerrarSesion()">Cerrar sesión</button>
+    <button onclick="exportarXLS()">Exportar</button>
+    <button onclick="eliminarTodo()">WAPAU!!!!!</button>
+  </div>
+
+  <table id="tablaRegistros">
+    <thead>
+      <tr>
+        <th>Apellidos</th>
+        <th>Nombres</th>
+        <th>DNI</th>
+        <th>Fecha de ingreso</th>
+        <th>Remuneración (S/)</th>
+        <th>Puesto</th>
+        <th>Pago Quincenal</th>
+        <th>Pago Mensual</th>
+        <th>Cese</th>
+        <th>Empresa</th>
+        <th>Editar</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr id="mensajeVacio">
+        <td colspan="11" style="text-align:center; font-style: italic;">
+          Aún no has llenado la tabla. Presiona "Nuevo" para agregar los datos.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div id="formularioCese" style="display: none; margin: 20px 0;">
+    <label for="fechaCese">Selecciona la fecha de cese:</label>
+    <input type="date" id="fechaCese">
+    <div class="botones-formulario">
+      <button onclick="confirmarCese()">Confirmar</button>
+      <button onclick="quitarCese()" >Quitar Cese</button>
+      <button onclick="cancelarCese()">Cancelar</button>
+
+    </div>
+  </div>
+
+  <section id="paginaEditar" class="hidden">
+  <h2>Editar Datos del Trabajador</h2>
+  <label>Empresa: <input type="text" id="editEmpresa" /></label>
+  <label>Apellidos: <input type="text" id="editApellidos"></label>
+  <label>Nombres: <input type="text" id="editNombres"></label>
+  <label>DNI: <input type="text" id="editDni" maxlength="8"></label>
+  <label>Fecha de ingreso: <input type="date" id="editFechaIngreso"></label>
+  <label>Remuneración (S/): <input type="number" id="editRemuneracion"></label>
+  <label>Puesto de trabajo: <input type="text" id="editPuesto"></label>
+
+  <div class="botones-formulario">
+    <button onclick="actualizarRegistro()">Actualizar</button>
+    <button onclick="cancelarEdicion()">Cancelar</button>
+  </div>
+  </section>
+
+  <section id="pagina1" class="hidden">
+    <h2>Ingreso de datos</h2>
+    <label>Empresa: <input type="text" id="empresa" /></label>
+    <label>Apellidos: <input type="text" id="apellidos"></label>
+    <label>Nombres: <input type="text" id="nombres"></label>
+    <label>DNI: <input type="text" id="dni" maxlength="8"></label>
+    <label>Fecha de ingreso: <input type="date" id="fechaIngreso"></label>
+    <label>Remuneración (S/): <input type="number" id="remuneracion"></label>
+    <label>Puesto de trabajo: <input type="text" id="puesto"></label>
+    <div class="botones-formulario">
+      <button onclick="guardarRegistro()">Guardar</button>
+      <button onclick="cancelarFormulario()">Cancelar</button>
+    </div>
+  </section>
+
+  <section id="pagoQuincena" class="hidden">
+  <h2>PAGO DE QUINCENA</h2>
+  <div class="input-grupo">
+    <label for="fechaQuincena">Fecha de pago:</label>
+    <input type="date" id="fechaQuincena">
+  </div>
+  <div class="input-grupo">
+    <label for="quincenaDiasInasistencia">Días de inasistencia:</label>
+    <input type="number" id="quincenaDiasInasistencia" min="0" step="1">
+  </div>
+  <div class="input-grupo">
+    <label for="adelantoQuincena">Adelantos/Reintegros (S/):</label>
+    <input type="number" id="adelantoQuincena" min="0" step="0.01">
+  </div>
+  <div class="botones-formulario">
+    <button onclick="calcularQuincena()">Calcular Quincena</button>
+    <button onclick="cancelarFormularioPago()">Cancelar</button>
+  </div>
+  <p id="resultadoQuincena"></p>
+  </section>
+
+  <section id="pagoMensual" class="hidden">
+    <h2>PAGO MENSUAL</h2>
+    <label>Adelanto de Sueldo (S/): <input type="number" id="adelanto"></label>
+    <label>Bono/Reintegro (S/): <input type="number" id="bono"></label>
+    <label>Días de inasistencia: <input type="number" id="diasInasistencia"></label>
+    <label>Inasistencia por horas:</label>
+    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+      <input type="number" id="horas" min="0" placeholder="Horas" style="width: 80px;">
+      <input type="number" id="minutos" min="0" max="59" placeholder="Minutos" style="width: 80px;">
+    </div>
+    <label>Otros descuentos (S/): <input type="number" id="otrosDescuentos"></label>
+    <div class="botones-formulario">
+      <button onclick="calcularMensual()">Calcular Mensual</button>
+      <button onclick="cancelarFormularioPago()">Cancelar</button>
+    </div>
+    <p id="resultadoMensual"></p>
+  </section>
+
+  <div id="modalSueldo" class="modal hidden">
+    <div class="modal-content">
+      <h3 id="tituloModalSueldo">Ingresar Sueldo Final</h3>
+      <p id="infoPeriodo"></p>
+      <input type="number" id="inputSueldoFinal" placeholder="Ingrese el sueldo final" />
+      <div class="modal-buttons">
+        <button onclick="confirmarSueldo()">Confirmar</button>
+        <button onclick="cerrarModalSueldo()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
